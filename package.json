@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.83.0",
+    "twitter": "^1.7.1"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/jes3rk/lira-node-app.git"
   },
-  "author": "",
+  "author": "Joseph Schefer",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jes3rk/lira-node-app/issues"
