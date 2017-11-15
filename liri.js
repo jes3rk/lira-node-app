@@ -11,6 +11,7 @@ var fs = require("fs");
 // Movies default works
 // Movies search works
 // Random works
+// Gui is broken
 
 
 var cmd = process.argv[2];
@@ -29,10 +30,61 @@ function conCat() {
 
 conCat();
 switchCase(cmd, desc);
-console.log("");
-console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+
+// This performs all the actions of the command line things
+function switchCase(query, txt) {
+
+  switch (query) {
+    case "my-tweets":
+      bringTweets();
+      console.log("");
+      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+      break;
+
+    case "spotify-this-song":
+      if (txt === "default") {
+        input = "The+Sign+Ace+of+Base";
+      } else {
+        input = txt;
+      };
+      song(input);
+      console.log("");
+      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+      break;
+
+    case "movie-this":
+      if (txt === "default") {
+        input = "Mr.Nobody";
+      } else {
+        input = txt;
+      };
+      findMovie(input);
+      console.log("");
+      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+      break;
+
+    case "do-what-it-says":
+      fs.readFile("./random.txt", "utf8", function(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          var random = data.split(",");
+          switchCase(random[0], random[1]);
+        };
+      });
+      console.log("");
+      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+      break;
+
+    default:
+      gui();
+      // console.log("invalid command");
+      break;
+  };
+}
 
 function gui() {
+  console.log("Using the GUI... NICE! (But still in beta... buggy)")
   // if command  isn't inputed, use the GUI
   inquirer
     .prompt([
@@ -51,6 +103,7 @@ function gui() {
         case "Show me tweets":
           bringTweets();
           break;
+
         case "I want to know more about a song":
           inquirer
             .prompt([
@@ -61,17 +114,16 @@ function gui() {
               }
             ])
             .then(function(inquirerResponse) {
-              var search;
               if (inquirerResponse.song) {
-                search = inquirerResponse.song;
+                input = inquirerResponse.song;
               } else {
-                search = "TheSignAceofBase";
+                input = "The+Sign+Ace+of+Base";
               };
-              song(search);
+              song(input);
             });
           break;
+
         case "I want to know more about a movie":
-          console.log("movie");
           inquirer
             .prompt([
               {
@@ -81,65 +133,20 @@ function gui() {
               }
             ])
             .then(function(inquirerResponse) {
-              var movie;
               if (inquirerResponse.movie) {
-                movie = inquirerResponse.movie;
+                input = inquirerResponse.movie;
               } else {
-                movie = "Mr.Nobody";
-              }
-
-              findMovie(movie.trim());
+                input = "Mr.Nobody";
+              };
+              findMovie(input);
             });
           break;
+
         case "Just do something, ANYTHING!":
           switchCase("do-what-it-says");
           break;
       };
     });
-}
-
-// This performs all the actions of the command line things
-function switchCase(query, txt) {
-
-  switch (query) {
-    case "my-tweets":
-      bringTweets();
-      break;
-
-    case "spotify-this-song":
-      if (txt === "default") {
-        input = "The+Sign+Ace+of+Base";
-      } else {
-        input = txt;
-      };
-      song(input);
-      break;
-
-    case "movie-this":
-      if (txt === "default") {
-        input = "Mr.Nobody";
-      } else {
-        input = txt;
-      };
-      findMovie(input);
-      break;
-
-    case "do-what-it-says":
-      fs.readFile("./random.txt", "utf8", function(err, data) {
-        if (err) {
-          console.log(err);
-        } else {
-          var random = data.split(",");
-          switchCase(random[0], random[1]);
-        };
-      });
-      break;
-
-    default:
-      gui();
-      // console.log("invalid command");
-      break;
-  };
 }
 
 function bringTweets() {
