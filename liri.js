@@ -111,7 +111,7 @@ function switchCase(query, txt) {
       if (txt === "default") {
         input = "Mr.Nobody";
       } else {
-        input = txt;
+        input = txt.trim();
       };
       findMovie(input);
       break;
@@ -178,6 +178,7 @@ function song() {
 
 // Movie stuff
 function findMovie(mov) {
+  console.log(mov);
   var queryUrl = 'http://www.omdbapi.com/?apikey=40e9cece&t=' + mov;
   // console.log(queryUrl);
   request.get(queryUrl, function(error, response, body) {
