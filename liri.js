@@ -33,7 +33,6 @@ switchCase(cmd, desc);
 
 // This performs all the actions of the command line things
 function switchCase(query, txt) {
-  console.log(query);
 
   switch (query) {
     case "my-tweets":
@@ -76,14 +75,13 @@ function switchCase(query, txt) {
       break;
 
     default:
+      console.log("invalid command");
       gui();
-      // console.log("invalid command");
       break;
   };
 }
 
 function gui() {
-  console.log("Using the GUI... NICE! (But still in beta... buggy)")
   // if command  isn't inputed, use the GUI
   inquirer
     .prompt([
@@ -172,12 +170,12 @@ function bringTweets() {
 }
 
 // Spotify stuff
-function song() {
+function song(q) {
   var spotify = new Spotify({
     id: keys.spotifyKeys.clientID,
     secret: keys.spotifyKeys.clientSecret
   });
-  spotify.search({ type: 'track,artist', query: input, limit: '1' }, function(err, data) {
+  spotify.search({ type: 'track,artist', query: q, limit: '1' }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     };
@@ -192,7 +190,6 @@ function song() {
 
 // Movie stuff
 function findMovie(mov) {
-  console.log(mov);
   var queryUrl = 'http://www.omdbapi.com/?apikey=40e9cece&t=' + mov;
   // console.log(queryUrl);
   request.get(queryUrl, function(error, response, body) {
