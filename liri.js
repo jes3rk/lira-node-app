@@ -7,104 +7,115 @@ var fs = require("fs");
 
 var cmd = process.argv[2];
 var desc = "";
+var input = "";
 
 function conCat() {
-  for (var i = 3; i < process.argv.length; i++) {
-    desc = desc + process.argv[i];
-    console.log(desc);
+  if (process.argv[3] !== undefined) {
+    for (var i = 3; i < process.argv.length; i++) {
+      desc = desc + process.argv[i];
+    };
+  } else {
+    desc = "default"
   };
 }
-// First step
-if (cmd) {
-  // if there is a command, do this...
-  conCat();
-  switchCase(cmd, desc);
 
-} else {
-  // if command  isn't inputed, use the GUI
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        message: "What is it you'd like to do today?",
-        choices: ["Show me tweets", "I want to know more about a song", "I want to know more about a movie", "Just do something, ANYTHING!"],
-        name: "firstStep"
-      }
-    ])
-    .then(function(inquirerResponse) {
+conCat();
+switchCase(cmd, desc);
+console.log("");
+console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
 
-      var firstChoice = inquirerResponse.firstStep;
-
-      switch (firstChoice) {
-        case "Show me tweets":
-          bringTweets();
-          break;
-        case "I want to know more about a song":
-          inquirer
-            .prompt([
-              {
-                type: "input",
-                message: "What song would you like to lookup?",
-                name: "song"
-              }
-            ])
-            .then(function(inquirerResponse) {
-              var search = inquirerResponse.song
-              song(search);
-            });
-          break;
-        case "I want to know more about a movie":
-          console.log("movie");
-          inquirer
-            .prompt([
-              {
-                type: "input",
-                message: "What movie would you like to search today?",
-                name: "movie"
-              }
-            ])
-            .then(function(inquirerResponse) {
-              var movie;
-              if (inquirerResponse.movie) {
-                movie = inquirerResponse.movie;
-              } else {
-                movie = "Mr.Nobody";
-              }
-
-              findMovie(movie.trim());
-            });
-          break;
-        case "Just do something, ANYTHING!":
-          switchCase("do-what-it-says", "");
-          break;
-      };
-    });
-}
+// function gui() {
+//   // if command  isn't inputed, use the GUI
+//   inquirer
+//     .prompt([
+//       {
+//         type: "list",
+//         message: "What is it you'd like to do today?",
+//         choices: ["Show me tweets", "I want to know more about a song", "I want to know more about a movie", "Just do something, ANYTHING!"],
+//         name: "firstStep"
+//       }
+//     ])
+//     .then(function(inquirerResponse) {
+//
+//       var firstChoice = inquirerResponse.firstStep;
+//
+//       switch (firstChoice) {
+//         case "Show me tweets":
+//           bringTweets();
+//           break;
+//         case "I want to know more about a song":
+//           inquirer
+//             .prompt([
+//               {
+//                 type: "input",
+//                 message: "What song would you like to lookup?",
+//                 name: "song"
+//               }
+//             ])
+//             .then(function(inquirerResponse) {
+//               var search;
+//               if (inquirerResponse.song) {
+//                 search = inquirerResponse.song;
+//               } else {
+//                 search = "TheSignAceofBase";
+//               };
+//               song(search);
+//             });
+//           break;
+//         case "I want to know more about a movie":
+//           console.log("movie");
+//           inquirer
+//             .prompt([
+//               {
+//                 type: "input",
+//                 message: "What movie would you like to search today?",
+//                 name: "movie"
+//               }
+//             ])
+//             .then(function(inquirerResponse) {
+//               var movie;
+//               if (inquirerResponse.movie) {
+//                 movie = inquirerResponse.movie;
+//               } else {
+//                 movie = "Mr.Nobody";
+//               }
+//
+//               findMovie(movie.trim());
+//             });
+//           break;
+//         case "Just do something, ANYTHING!":
+//           switchCase("do-what-it-says");
+//           break;
+//       };
+//     });
+// }
 
 // This performs all the actions of the command line things
 function switchCase(query, txt) {
+
   switch (query) {
     case "my-tweets":
       bringTweets();
       break;
+
     case "spotify-this-song":
-      var input = "";
-      if (txt === undefined) {
-        input = "TheSignAceofBase"
+      if (txt === "default") {
+        input = "TheSignAceofBase";
       } else {
         input = txt;
-      }
+      };
       song(input);
       break;
+
     case "movie-this":
-      var input = "";
-      if (txt === undefined) {
+      if (txt === "default") {
         input = "Mr.Nobody";
       } else {
         input = txt;
       };
       findMovie(input);
       break;
+
     case "do-what-it-says":
       fs.readFile("./random.txt", "utf8", function(err, data) {
         if (err) {
@@ -115,11 +126,14 @@ function switchCase(query, txt) {
         };
       });
       break;
+
+    default:
+      // gui();
+      console.log("invalid command");
+      break;
   };
 }
 
-
-// Twitter needs a lot of work
 function bringTweets() {
   var client = new Twitter({
     consumer_key: keys.twitterKeys.consumer_key,
@@ -144,16 +158,15 @@ function bringTweets() {
 }
 
 // Spotify stuff
-function song(q) {
+function song() {
   var spotify = new Spotify({
     id: keys.spotifyKeys.clientID,
     secret: keys.spotifyKeys.clientSecret
   });
-
-  spotify.search({ type: 'track,artist', query: q, limit: '1' }, function(err, data) {
+  spotify.search({ type: 'track,artist', query: input, limit: '1' }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
-    }
+    };
     var spot = data.tracks.items[0];
     console.log("");
     console.log("Artist: " + spot.album.artists[0].name);
@@ -165,10 +178,8 @@ function song(q) {
 
 // Movie stuff
 function findMovie(mov) {
-  var base_url = 'http://www.omdbapi.com/?apikey=40e9cece&t=';
-
-  var queryUrl = base_url + mov;
-
+  var queryUrl = 'http://www.omdbapi.com/?apikey=40e9cece&t=' + mov;
+  // console.log(queryUrl);
   request.get(queryUrl, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var bod = JSON.parse(body);
