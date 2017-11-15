@@ -11,6 +11,7 @@ var desc = "";
 function conCat() {
   for (var i = 3; i < process.argv.length; i++) {
     desc = desc + process.argv[i];
+    console.log(desc);
   };
 }
 // First step
@@ -127,16 +128,22 @@ function bringTweets() {
     access_token_secret: keys.twitterKeys.access_token_secret
   });
 
-  var params = {screen_name: "@JimbobAlbob"};
-  client.get('statues/user_timeline', params, function(error, tweets, response) {
+  var params = {screen_name: "@JimbobAlbob", limit: "20"};
+  client.get('statuses/user_timeline', params, function(error, tweets, response) {
      if (!error) {
-       console.log(tweets);
+       for (var i = 0; i < tweets.length; i++) {
+         console.log("");
+         console.log(tweets[i].created_at);
+         console.log(tweets[i].text);
+       };
+       // console.log(tweets);
      } else {
        console.log(error);
      };
  });
 }
 
+// Spotify stuff
 function song(q) {
   var spotify = new Spotify({
     id: keys.spotifyKeys.clientID,
@@ -149,7 +156,6 @@ function song(q) {
     }
     var spot = data.tracks.items[0];
     console.log("");
-    console.log("");
     console.log("Artist: " + spot.album.artists[0].name);
     console.log("Song: " + spot.name);
     console.log("On Spotify: " + spot.external_urls.spotify);
@@ -157,6 +163,7 @@ function song(q) {
   });
 }
 
+// Movie stuff
 function findMovie(mov) {
   var base_url = 'http://www.omdbapi.com/?apikey=40e9cece&t=';
 
@@ -166,14 +173,14 @@ function findMovie(mov) {
     if (!error && response.statusCode === 200) {
       var bod = JSON.parse(body);
       console.log("");
-      console.log("");
       console.log("Title: " + bod.Title);
       console.log("Release Year: " + bod.Year);
+      // I've noticed that the ratings can sometimes not exist, so this checks to see if we get a response
       if (bod.Ratings[0] !== undefined) {
-        console.log("IMDB: " + bod.Ratings[0].Value);
+        console.log(bod.Ratings[0].Source + ": " + bod.Ratings[0].Value);
       };
       if (bod.Ratings[1] !== undefined) {
-        console.log("Rotten Tomatoes: " + bod.Ratings[1].Value);
+        console.log(bod.Ratings[1].Source + ": " + bod.Ratings[1].Value);
       };
       console.log("Country: " + bod.Country);
       console.log("Language(s): " + bod.Language);
