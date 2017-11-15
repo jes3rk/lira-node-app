@@ -5,6 +5,14 @@ var inquirer = require("inquirer");
 var keys = require("./keys.js");
 var fs = require("fs");
 
+// Twitter works
+// Spotify default works
+// Spotify search works
+// Movies default works
+// Movies search works
+// Random works
+
+
 var cmd = process.argv[2];
 var desc = "";
 var input = "";
@@ -12,7 +20,7 @@ var input = "";
 function conCat() {
   if (process.argv[3] !== undefined) {
     for (var i = 3; i < process.argv.length; i++) {
-      desc = desc + process.argv[i];
+      desc = desc + "+" + process.argv[i];
     };
   } else {
     desc = "default"
@@ -24,71 +32,71 @@ switchCase(cmd, desc);
 console.log("");
 console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
 
-// function gui() {
-//   // if command  isn't inputed, use the GUI
-//   inquirer
-//     .prompt([
-//       {
-//         type: "list",
-//         message: "What is it you'd like to do today?",
-//         choices: ["Show me tweets", "I want to know more about a song", "I want to know more about a movie", "Just do something, ANYTHING!"],
-//         name: "firstStep"
-//       }
-//     ])
-//     .then(function(inquirerResponse) {
-//
-//       var firstChoice = inquirerResponse.firstStep;
-//
-//       switch (firstChoice) {
-//         case "Show me tweets":
-//           bringTweets();
-//           break;
-//         case "I want to know more about a song":
-//           inquirer
-//             .prompt([
-//               {
-//                 type: "input",
-//                 message: "What song would you like to lookup?",
-//                 name: "song"
-//               }
-//             ])
-//             .then(function(inquirerResponse) {
-//               var search;
-//               if (inquirerResponse.song) {
-//                 search = inquirerResponse.song;
-//               } else {
-//                 search = "TheSignAceofBase";
-//               };
-//               song(search);
-//             });
-//           break;
-//         case "I want to know more about a movie":
-//           console.log("movie");
-//           inquirer
-//             .prompt([
-//               {
-//                 type: "input",
-//                 message: "What movie would you like to search today?",
-//                 name: "movie"
-//               }
-//             ])
-//             .then(function(inquirerResponse) {
-//               var movie;
-//               if (inquirerResponse.movie) {
-//                 movie = inquirerResponse.movie;
-//               } else {
-//                 movie = "Mr.Nobody";
-//               }
-//
-//               findMovie(movie.trim());
-//             });
-//           break;
-//         case "Just do something, ANYTHING!":
-//           switchCase("do-what-it-says");
-//           break;
-//       };
-//     });
-// }
+function gui() {
+  // if command  isn't inputed, use the GUI
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What is it you'd like to do today?",
+        choices: ["Show me tweets", "I want to know more about a song", "I want to know more about a movie", "Just do something, ANYTHING!"],
+        name: "firstStep"
+      }
+    ])
+    .then(function(inquirerResponse) {
+
+      var firstChoice = inquirerResponse.firstStep;
+
+      switch (firstChoice) {
+        case "Show me tweets":
+          bringTweets();
+          break;
+        case "I want to know more about a song":
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                message: "What song would you like to lookup?",
+                name: "song"
+              }
+            ])
+            .then(function(inquirerResponse) {
+              var search;
+              if (inquirerResponse.song) {
+                search = inquirerResponse.song;
+              } else {
+                search = "TheSignAceofBase";
+              };
+              song(search);
+            });
+          break;
+        case "I want to know more about a movie":
+          console.log("movie");
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                message: "What movie would you like to search today?",
+                name: "movie"
+              }
+            ])
+            .then(function(inquirerResponse) {
+              var movie;
+              if (inquirerResponse.movie) {
+                movie = inquirerResponse.movie;
+              } else {
+                movie = "Mr.Nobody";
+              }
+
+              findMovie(movie.trim());
+            });
+          break;
+        case "Just do something, ANYTHING!":
+          switchCase("do-what-it-says");
+          break;
+      };
+    });
+}
 
 // This performs all the actions of the command line things
 function switchCase(query, txt) {
@@ -100,7 +108,7 @@ function switchCase(query, txt) {
 
     case "spotify-this-song":
       if (txt === "default") {
-        input = "TheSignAceofBase";
+        input = "The+Sign+Ace+of+Base";
       } else {
         input = txt;
       };
@@ -111,7 +119,7 @@ function switchCase(query, txt) {
       if (txt === "default") {
         input = "Mr.Nobody";
       } else {
-        input = txt.trim();
+        input = txt;
       };
       findMovie(input);
       break;
@@ -128,8 +136,8 @@ function switchCase(query, txt) {
       break;
 
     default:
-      // gui();
-      console.log("invalid command");
+      gui();
+      // console.log("invalid command");
       break;
   };
 }
