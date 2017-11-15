@@ -33,6 +33,7 @@ switchCase(cmd, desc);
 
 // This performs all the actions of the command line things
 function switchCase(query, txt) {
+  console.log(query);
 
   switch (query) {
     case "my-tweets":
@@ -60,7 +61,7 @@ function switchCase(query, txt) {
       };
       findMovie(input);
       console.log("");
-      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
+      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`);
       break;
 
     case "do-what-it-says":
@@ -72,8 +73,6 @@ function switchCase(query, txt) {
           switchCase(random[0], random[1]);
         };
       });
-      console.log("");
-      console.log(`Did you know... there's a GUI! Just enter "node liri.js" into the command line :^)`)
       break;
 
     default:
@@ -143,7 +142,7 @@ function gui() {
           break;
 
         case "Just do something, ANYTHING!":
-          switchCase("do-what-it-says");
+          switchCase("do-what-it-says", desc);
           break;
       };
     });
