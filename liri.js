@@ -6,48 +6,19 @@ var keys = require("./keys.js");
 var fs = require("fs");
 
 var cmd = process.argv[2];
+var desc = "";
+
+function conCat() {
+  for (var i = 3; i < process.argv.length; i++) {
+    desc = desc + process.argv[i];
+  };
+}
 // First step
 if (cmd) {
   // if there is a command, do this...
-  switch (cmd) {
-    case "my-tweets":
-      bringTweets();
-      break;
-    case "spotify-this-song":
-      var input = "";
-      if (process.argv[3] === undefined) {
-        input = "TheSignAceofBase"
-      } else {
-        for (var i = 3; i < process.argv.length; i++) {
-          input = input + process.argv[i];
-        };
-      };
-      song(input);
-      break;
-    case "movie-this":
-      var input = "";
-      if (process.argv[3] === undefined) {
-        input = "Mr.Nobody";
-      } else {
-        for (var i = 3; i < process.argv.length; i++) {
-          input = input + process.argv[i];
-        };
-      };
-      findMovie(input);
-      break;
-    case "do-what-it-says":
-      fs.readFile("./random.txt", "utf8", function(err, data) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(data);
-          var random = data.replace(",", " ");
-          var final = random.split(" ");
-          console.log(final);
-        };
-      });
-      break;
-  };
+  conCat();
+  switchCase(cmd, desc);
+
 } else {
   // if command  isn't inputed, use the GUI
   inquirer
@@ -103,10 +74,47 @@ if (cmd) {
             });
           break;
         case "Just do something, ANYTHING!":
-          console.log("random");
+          switchCase("do-what-it-says", "");
           break;
       };
     });
+}
+
+// This performs all the actions of the command line things
+function switchCase(query, txt) {
+  switch (query) {
+    case "my-tweets":
+      bringTweets();
+      break;
+    case "spotify-this-song":
+      var input = "";
+      if (txt === undefined) {
+        input = "TheSignAceofBase"
+      } else {
+        input = txt;
+      }
+      song(input);
+      break;
+    case "movie-this":
+      var input = "";
+      if (txt === undefined) {
+        input = "Mr.Nobody";
+      } else {
+        input = txt;
+      };
+      findMovie(input);
+      break;
+    case "do-what-it-says":
+      fs.readFile("./random.txt", "utf8", function(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          var random = data.split(",");
+          switchCase(random[0], random[1]);
+        };
+      });
+      break;
+  };
 }
 
 
